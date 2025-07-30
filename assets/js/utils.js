@@ -41,7 +41,7 @@ export function compileShader(gl, source, type) {
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     const info = gl.getShaderInfoLog(shader);
     gl.deleteShader(shader);
-    throw new Error(`Could not compile WebGL program: ${info}`);
+    throw new Error(`Could not compile WebGL shader: ${info}`);
   }
   return shader;
 }
