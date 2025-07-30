@@ -5,7 +5,7 @@ import {
 } from "@/utils";
 
 function main() {
-  const gl = getWebGL2RenderingContext("2.1");
+  const gl = getWebGL2RenderingContext("2.3");
 
   const vshader = compileShader(
     gl,
@@ -34,24 +34,14 @@ function main() {
 
   const program = createAndLinkProgram(gl, vshader, fshader);
 
-  const vao = gl.createVertexArray();
   const vbo = gl.createBuffer();
-  const ebo = gl.createBuffer();
-  // Binding.
-  gl.bindVertexArray(vao);
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo);
-  // Settings.
   gl.bufferData(
     gl.ARRAY_BUFFER,
     new Float32Array([
-      0.5, 0.5, 0, 1, 0.5, -0.5, 0, 1, -0.5, -0.5, 0, 1, -0.5, 0.5, 0, 1,
+      -1, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0.5, -1,
+      0, 1,
     ]),
-    gl.STATIC_DRAW,
-  );
-  gl.bufferData(
-    gl.ELEMENT_ARRAY_BUFFER,
-    new Uint32Array([0, 1, 3, 1, 2, 3]),
     gl.STATIC_DRAW,
   );
   gl.vertexAttribPointer(
@@ -63,15 +53,12 @@ function main() {
     0,
   );
   gl.enableVertexAttribArray(0);
-  // Unbinding.
-  gl.bindVertexArray(null);
-  gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
   function render() {
-    gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 1]);
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.useProgram(program);
-    gl.bindVertexArray(vao);
-    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
     requestAnimationFrame(render);
   }
 
