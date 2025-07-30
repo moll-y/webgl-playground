@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node esbuild.js"
+    "build": "node esbuild.mjs"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
     "esbuild": "^0.25.8",
+    "esbuild-plugin-glsl": "^1.4.0",
     "glob": "^11.0.3"
   }
 }
