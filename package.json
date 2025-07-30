@@ -1,0 +1,15 @@
+{
+  "name": "webgl-playground",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node esbuild.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "esbuild": "^0.25.8",
+    "glob": "^11.0.3"
+  }
+}

@@ -1,0 +1,11 @@
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  {{ $id := path.Base (path.Dir .File.Path) }}
+  <canvas id="{{ $id }}" width="500" height="500">WebGL2 Playground</canvas>
+{{ end }}
+
+{{ define "scripts" }}
+  {{ $id := path.Base (path.Dir .File.Path) }}
+  <script src="/js/{{ $id }}/bundle.js" defer></script>
+{{ end }}
