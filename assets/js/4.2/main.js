@@ -65,7 +65,12 @@ function main() {
   gl.bindVertexArray(null);
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
+  // Textures.
+  const uTexture1 = gl.getUniformLocation(shader.program, "u_texture_1");
+  const uTexture2 = gl.getUniformLocation(shader.program, "u_texture_2");
+
   const texture1 = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, texture1);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
@@ -94,13 +99,18 @@ function main() {
 
   const image1 = new Image();
   image1.onload = function () {
+    gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image1);
     gl.generateMipmap(gl.TEXTURE_2D);
+
+    shader.use();
+    gl.uniform1i(uTexture1, 0);
   };
   image1.src = "/textures/4.2/container.jpg";
 
   const texture2 = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE1);
   gl.bindTexture(gl.TEXTURE_2D, texture2);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
@@ -129,30 +139,22 @@ function main() {
 
   const image2 = new Image();
   image2.onload = function () {
+    gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, texture2);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image2);
     gl.generateMipmap(gl.TEXTURE_2D);
+
+    shader.use();
+    gl.uniform1i(uTexture2, 1);
   };
   image2.src = "/textures/4.2/awesomeface.png";
-
-  const uTexture1 = gl.getUniformLocation(shader.program, "u_texture_1");
-  const uTexture2 = gl.getUniformLocation(shader.program, "u_texture_2");
 
   function render() {
     gl.clearColor(0.2, 0.3, 0.3, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-
     shader.use();
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, texture1);
-    gl.uniform1i(uTexture1, 0);
-
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, texture2);
-    gl.uniform1i(uTexture2, 1);
     gl.bindVertexArray(vao);
-
     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, 0);
     requestAnimationFrame(render);
   }
