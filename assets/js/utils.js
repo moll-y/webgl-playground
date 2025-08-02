@@ -70,3 +70,45 @@ export function createAndLinkProgram(gl, ...shaders) {
   }
   return program;
 }
+
+export function loadTexture(gl, textureUnit, index, path, shader, location) {
+  const texture = gl.createTexture();
+  gl.activeTexture(textureUnit);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(
+    gl.TEXTURE_2D,
+    gl.TEXTURE_MIN_FILTER,
+    gl.LINEAR_MIPMAP_LINEAR,
+  );
+
+  // Because images have to be downloaded over the internet they might take a
+  // moment until they are ready. Until then put a single pixel in the texture
+  // so we can use it immediately. When the image has finished downloading
+  // we'll update the texture with the contents of the image.
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    1,
+    1,
+    0,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    new Uint8Array([0, 0, 255, 255]),
+  );
+
+  const image = new Image();
+  image.onload = function () {
+    gl.activeTexture(textureUnit);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+    gl.generateMipmap(gl.TEXTURE_2D);
+
+    shader.use();
+    gl.uniform1i(location, index);
+  };
+  image.src = path;
+}
