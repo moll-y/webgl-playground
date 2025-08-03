@@ -19,6 +19,20 @@ export function getWebGL2RenderingContext(elementId) {
   return gl;
 }
 
+export function getWebGLRenderingContext(elementId) {
+  const canvas = document.getElementById(elementId);
+  if (canvas === null) {
+    throw new Error("No matching element was found in the document.");
+  }
+  const gl = canvas.getContext("webgl2");
+  if (gl === null) {
+    throw new Error(
+      "Context identifier is not supported, or the canvas has already been set to a different context mode.",
+    );
+  }
+  return [gl, canvas];
+}
+
 /**
  * Compiles a shader of the given type (vertex or fragment) using the provided
  * source code.
